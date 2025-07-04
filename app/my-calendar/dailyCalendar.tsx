@@ -4,26 +4,76 @@ import { Calendar } from "react-native-big-calendar";
 const now = new Date();
 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+const baseDate = new Date(); // today
+baseDate.setHours(0, 0, 0, 0); // reset time
+
+function getDateWithTimeOffset(
+  dayOffset: number,
+  hour: number,
+  minute: number = 0
+) {
+  const date = new Date(baseDate);
+  date.setDate(date.getDate() + dayOffset);
+  date.setHours(hour, minute, 0, 0);
+  return date;
+}
+
 const events = [
   {
-    title: "Morning Standup",
-    start: new Date(today.setHours(9, 0)),
-    end: new Date(today.setHours(9, 30)),
+    title: "Monday Kickoff",
+    start: getDateWithTimeOffset(1, 9, 0),
+    end: getDateWithTimeOffset(1, 10, 30),
   },
   {
-    title: "Team Sync",
-    start: new Date(today.setHours(11, 0)),
-    end: new Date(today.setHours(12, 0)),
+    title: "Dev Sync",
+    start: getDateWithTimeOffset(1, 11, 0),
+    end: getDateWithTimeOffset(1, 12, 0),
+  },
+
+  {
+    title: "Design Review",
+    start: getDateWithTimeOffset(2, 10, 30),
+    end: getDateWithTimeOffset(2, 11, 30),
   },
   {
-    title: "Lunch Break",
-    start: new Date(today.setHours(13, 0)),
-    end: new Date(today.setHours(14, 0)),
+    title: "Client Meeting",
+    start: getDateWithTimeOffset(2, 14, 0),
+    end: getDateWithTimeOffset(2, 15, 0),
+  },
+
+  {
+    title: "Code Review",
+    start: getDateWithTimeOffset(3, 13, 0),
+    end: getDateWithTimeOffset(3, 14, 0),
+  },
+
+  {
+    title: "Backend Standup",
+    start: getDateWithTimeOffset(4, 9, 30),
+    end: getDateWithTimeOffset(4, 10, 0),
   },
   {
-    title: "1:1 Meeting",
-    start: new Date(today.setHours(15, 30)),
-    end: new Date(today.setHours(16, 0)),
+    title: "UI Testing",
+    start: getDateWithTimeOffset(4, 15, 0),
+    end: getDateWithTimeOffset(4, 16, 0),
+  },
+
+  {
+    title: "Wrap-Up",
+    start: getDateWithTimeOffset(5, 16, 0),
+    end: getDateWithTimeOffset(5, 17, 0),
+  },
+
+  {
+    title: "Side Project Hack",
+    start: getDateWithTimeOffset(6, 11, 0),
+    end: getDateWithTimeOffset(6, 13, 0),
+  },
+
+  {
+    title: "Rest & Recharge",
+    start: getDateWithTimeOffset(7, 10, 0),
+    end: getDateWithTimeOffset(7, 11, 30),
   },
 ];
 
@@ -49,12 +99,12 @@ export default function DailyCalendar() {
         >
           <Calendar
             events={events}
-            height={600}
-            mode="3days" // changed the mode to 3days so the info would be readable
+            height={700}
+            mode="3days"
             hideNowIndicator={false}
             scrollOffsetMinutes={480}
             showTime={false}
-            hourRowHeight={100}
+            hourRowHeight={60}
             eventCellStyle={(event) => ({
               backgroundColor: "#4f46e5",
               borderRadius: 6,

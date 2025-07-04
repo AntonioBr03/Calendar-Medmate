@@ -2,48 +2,60 @@ import {
   CalendarBody,
   CalendarContainer,
   CalendarHeader,
-  PackedEvent,
   type EventItem,
+  type PackedEvent,
 } from "@howljs/calendar-kit";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { events as exampEvents } from "./events";
 
-export default function CalendarKitPage() {
-  const [events, setEvents] = useState<EventItem[]>(exampEvents);
+export default function CalendarKitExample() {
+  const events: EventItem[] = [
+    {
+      id: "1",
+      title: "Test Event",
+      start: { dateTime: "2025-07-15T12:00:00.000Z", timeZone: "UTC" },
+      end: { dateTime: "2025-07-15T13:00:00.000Z", timeZone: "UTC" },
+      color: "#4285F4",
+    },
+    {
+      id: "2",
+      title: "Monthly Review",
+      start: { dateTime: "2025-07-10", timeZone: "UTC" },
+      end: { dateTime: "2025-07-11", timeZone: "UTC" },
+      color: "#34A853",
+      recurrenceRule: "RRULE:FREQ=MONTHLY;BYDAY=1MO",
+    },
+  ];
 
-  const handleDragEnd = (event: EventItem) => {
-    setEvents((prev) => [...prev, event]);
-  };
+  React.useEffect(() => {
+    console.log("Events loaded:", events);
+  }, []);
+
   const renderEvent = useCallback((event: PackedEvent) => {
-    console.log("Rendering event:", event);
+    console.log("Rendering event:", event.title);
     return (
-      <View style={{ width: "100%", height: "100%", padding: 4 }}>
-        <Text style={{ color: "white", fontSize: 10 }}>{event.title}</Text>
+      <View style={[styles.event, { backgroundColor: event.color }]}>
+        <Text style={styles.eventText}>{event.title}</Text>
       </View>
     );
   }, []);
 
+  const handleCreation = (start: any) => {
+    console.log("started creation at:", start);
+  };
+  const handleEndCreation = (event: any) => {
+    console.log("New event:", event);
+  };
+
   return (
     <View style={styles.container}>
       <CalendarContainer
-        events={[
-          {
-            id: "1",
-            title: "Meeting with Team",
-            start: { dateTime: "2025-07-04T11:00:00Z" }, // 11:00 AM UTC
-            end: { dateTime: "2025-07-04T12:00:00Z" }, // 12:00 PM UTC
-            color: "#4285F4",
-          },
-        ]}
-        initialDate={"2025-07-04"}
-        hideWeekDays={[6, 7]}
-        scrollByDay={true}
-        allowDragToCreate
-        onDragEventEnd={handleDragEnd}
-        defaultDuration={60}
-        dragStep={30}
-        useHaptic
+        allowDragToCreate={true}
+        events={events}
+        initialDate="2025-07-15"
+        onPressEvent={(event) => {
+          console.log("Event pressed:", event);
+        }}
       >
         <CalendarHeader />
         <CalendarBody renderEvent={renderEvent} />
@@ -54,4 +66,16 @@ export default function CalendarKitPage() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 50 },
+  event: {
+    borderRadius: 6,
+    padding: 8,
+    minHeight: 30,
+    minWidth: 50,
+    marginVertical: 2,
+  },
+  eventText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 12,
+  },
 });
